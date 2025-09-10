@@ -66,25 +66,23 @@ export const updateAttendance = async (req, res) => {
     const { empId } = req.params;
     const { year, month, day, status } = req.body;
 
-    const y = parseInt(year);
-    const m = parseInt(month);
-
     const employee = await Employee.findOne({ empId });
     if (!employee) return res.status(404).json({ message: "Employee not found" });
 
-    let record = employee.attendance.find(r => r.year === y && r.month === m);
+    let record = employee.attendance.find(r => r.year === year && r.month === month);
     if (!record) {
-      record = { year: y, month: m, days: {} };
+      record = { year, month, days: {} };
       employee.attendance.push(record);
     }
 
-    // ✅ Safe assignment for plain object
-    record.days.set(String(day), status);
+    // ✅ Always update as object
+    if (!record.days) record.days = {};
+    record.days[String(day)] = status;
 
     await employee.save();
     res.json(employee);
   } catch (err) {
-    console.error("❌ Error updating attendance:", err);
     res.status(500).json({ message: err.message });
   }
-}
+};
+
