@@ -14,7 +14,7 @@ const employeeSchema = new mongoose.Schema({
   name: { type: String, required: true },
   role: { type: String, required: true },
   attendance: [attendanceSchema]
-});
+}, { timestamps: true });
 
 const Employee = mongoose.model("Employee", employeeSchema);
 

@@ -79,7 +79,7 @@ export const updateAttendance = async (req, res) => {
     }
 
     // ✅ Safe assignment for plain object
-    record.days[String(day)] = status;
+    record.days.set(String(day), status);
 
     await employee.save();
     res.json(employee);
