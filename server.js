@@ -9,8 +9,11 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: config.clientURL,
+  origin: ["https://attendance-frontend-eight-weld.vercel.app/"], // your Vercel domain
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
 }));
+
 app.use(express.json({ limit: "5mb" }));
 
 // Routes
