@@ -69,26 +69,24 @@ export const updateAttendance = async (req, res) => {
     const employee = await Employee.findOne({ empId });
     if (!employee) return res.status(404).json({ message: "Employee not found" });
 
-    // Find or create attendance record
+    // Find record for given year & month
     let record = employee.attendance.find(r => r.year === year && r.month === month);
     if (!record) {
-      record = { year, month, days: {} };
+      record = { year, month, days: new Map() }; // ✅ create new Map
       employee.attendance.push(record);
     }
 
-    // ✅ Update the day status
-    if (!record.days) record.days = {};
-    record.days[String(day)] = status;
-
-    // ✅ Tell Mongoose this nested path changed
-    employee.markModified("attendance");
+    // ✅ since days is a Map, use set()
+    record.days.set(String(day), status);
 
     await employee.save();
     res.json(employee);
   } catch (err) {
-    console.error("❌ Update attendance error:", err);
+    console.error("❌ Error updating attendance:", err);
     res.status(500).json({ message: err.message });
   }
 };
+
+
 
 

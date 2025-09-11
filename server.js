@@ -1,4 +1,3 @@
-// server/server.js
 import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
@@ -16,33 +15,21 @@ if (!MONGO_URI) {
   process.exit(1);
 }
 
-// ✅ Configure CORS properly
-const allowedOrigins = [
-  "http://localhost:5173",   // local dev
-  "https://attendance-frontend-eight-weld.vercel.app" // deployed frontend
-];
-
+// ✅ CORS middleware
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
+  origin: ["https://attendance-frontend-eight-weld.vercel.app", "http://localhost:5173"],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
-// ✅ Handle preflight
+// ✅ handle preflight requests
 app.options("*", cors());
 
 app.use(express.json({ limit: "5mb" }));
 
-// routes
+// Routes
 app.use("/api/employees", employeeRoutes);
 
-// basic health
 app.get("/", (req, res) => res.send("Attendance API is up"));
 
 mongoose.connect(MONGO_URI)
